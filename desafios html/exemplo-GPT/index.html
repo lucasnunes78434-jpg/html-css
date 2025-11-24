@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Completo - Uma Página</title>
+
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f9;
+            color: #333;
+        }
+
+        /* Navegação */
+        nav {
+            background-color: #007bff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        nav button:hover {
+            color: #ffeb3b;
+        }
+
+        /* Container */
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Ocultar seções */
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        /* Tarefas */
+        .input-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px 0 0 5px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+        }
+
+        button.adicionar {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button.adicionar:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        li {
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li.concluida {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        li button.remover {
+            background-color: #ff4d4d;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        li button.remover:hover {
+            background-color: #cc0000;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <button onclick="mostrarSecao('home')">Home</button>
+        <button onclick="mostrarSecao('tarefas')">Tarefas</button>
+        <button onclick="mostrarSecao('sobre')">Sobre</button>
+    </nav>
+
+    <div class="container">
+        <!-- Home -->
+        <section id="home" class="active">
+            <h1>Bem-vindo ao Site!</h1>
+            <p>Este é um site completo em apenas uma página, com navegação entre seções e lista de tarefas interativa.</p>
+        </section>
+
+        <!-- Tarefas -->
+        <section id="tarefas">
+            <h1>Minha Lista de Tarefas</h1>
+
+            <div class="input-container">
+                <input type="text" id="nova-tarefa" placeholder="Digite uma tarefa">
+                <button class="adicionar" id="adicionar">Adicionar</button>
+            </div>
+
+            <ul id="lista-tarefas"></ul>
+        </section>
+
+        <!-- Sobre -->
+        <section id="sobre">
+            <h1>Sobre este site</h1>
+            <p>Este site foi feito para demonstrar um projeto completo usando apenas HTML, CSS e JavaScript em uma única página.</p>
+        </section>
+    </div>
+
+    <script>
+        // Navegação entre seções
+        function mostrarSecao(secaoId) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(secaoId).classList.add('active');
+        }
+
+        // Tarefas
+        const inputTarefa = document.getElementById('nova-tarefa');
+        const botaoAdicionar = document.getElementById('adicionar');
+        const listaTarefas = document.getElementById('lista-tarefas');
+
+        // Carregar tarefas do localStorage
+        window.addEventListener('load', () => {
+            const tarefasSalvas = JSON.parse(localStorage.getItem('tarefas')) || [];
+            tarefasSalvas.forEach(t => adicionarTarefa(t.texto, t.concluida));
+        });
+
+        // Adicionar tarefa
+        botaoAdicionar.addEventListener('click', function() {
+            const texto = inputTarefa.value.trim();
+            if (texto !== '') {
+                adicionarTarefa(texto, false);
+                inputTarefa.value = '';
+                inputTarefa.focus();
+                salvarTarefas();
+            }
+        });
+
+        // Criar tarefa
+        function adicionarTarefa(texto, concluida) {
+            const li = document.createElement('li');
+            li.textContent = texto;
+            if (concluida) li.classList.add('concluida');
+
+            const btnRemover = document.createElement('button');
+            btnRemover.textContent = 'Remover';
+            btnRemover.classList.add('remover');
+            li.appendChild(btnRemover);
+
+            li.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'BUTTON') {
+                    li.classList.toggle('concluida');
+                    salvarTarefas();
+                }
+            });
+
+            btnRemover.addEventListener('click', function() {
+                listaTarefas.removeChild(li);
+                salvarTarefas();
+            });
+
+            listaTarefas.appendChild(li);
+        }
+
+        // Salvar tarefas
+        function salvarTarefas() {
+            const tarefas = [];
+            listaTarefas.querySelectorAll('li').forEach(li => {
+                tarefas.push({texto: li.childNodes[0].textContent, concluida: li.classList.contains('concluida')});
+            });
+            localStorage.setItem('tarefas', JSON.stringify(tarefas));
+        }
+    </script>
+</body>
+</html>

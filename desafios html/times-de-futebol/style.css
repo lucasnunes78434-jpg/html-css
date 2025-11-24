@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Ovo&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Ovo&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #efebeb;
+}
+
+
+:root {
+    --fonte-paragrafo: 'Open Sans', sans-serif;
+    --fonte-titulo: 'Bebas Neue', 'cursive';
+    
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    font-family: var(--fonte-titulo);
+    background-color: #DDDBDB ;
+    text-align: center;
+    width: 100%;
+    padding: 15px;
+    font-size: 0.5em;
+    
+}
+
+main h2 {
+    font-family: var(--fonte-titulo);
+    margin: 5px;
+}
+
+main p {
+    font-family: var(--fonte-paragrafo);
+    text-align: justify;
+}
+
+main img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 65%;
+}
+
+footer {
+    background-color: rgb(225, 212, 212);
+    text-align: center;
+    color: white;
+}
+
+
+div {
+    background-color: rgb(185, 184, 184);
+    padding-left: 40px;
+    padding-right: 40px;
+}
